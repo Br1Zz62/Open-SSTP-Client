@@ -34,7 +34,6 @@
         <kittoku.osc.preference.custom.PPPIPv4EnabledPreference android:key="PPP_IPv4_ENABLED"/>
         <kittoku.osc.preference.custom.PPPDoRequestStaticIPv4AddressPreference android:key="PPP_DO_REQUEST_STATIC_IPv4_ADDRESS"/>
         <kittoku.osc.preference.custom.PPPStaticIPv4AddressPreference android:key="PPP_STATIC_IPv4_ADDRESS"/>
-        <kittoku.osc.preference.custom.PPPIPv6EnabledPreference android:key="PPP_IPv6_ENABLED"/>
     </PreferenceCategory>
 
     <PreferenceCategory android:title="DNS Server">

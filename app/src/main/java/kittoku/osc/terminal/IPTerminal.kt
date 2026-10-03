@@ -5,7 +5,6 @@ import kittoku.osc.ControlMessage
 import kittoku.osc.Result
 import kittoku.osc.SharedBridge
 import kittoku.osc.Where
-import kittoku.osc.extension.toHexByteArray
 import kittoku.osc.preference.LIST_TYPE_ALLOWED
 import kittoku.osc.preference.OscPrefKey
 import kittoku.osc.preference.accessor.getBooleanPrefValue
@@ -24,10 +23,7 @@ internal class IPTerminal(private val bridge: SharedBridge) {
 
     private val doEnableAppBasedRule = getBooleanPrefValue(OscPrefKey.ROUTE_DO_ENABLE_APP_BASED_RULE, bridge.prefs)
     private val isAllowedList = getStringPrefValue(OscPrefKey.ROUTE_APP_LIST_TYPE, bridge.prefs) == LIST_TYPE_ALLOWED
-    private val doAddDefaultRoute = getBooleanPrefValue(OscPrefKey.ROUTE_DO_ADD_DEFAULT_ROUTE, bridge.prefs)
-    private val doRoutePrivateAddresses = getBooleanPrefValue(OscPrefKey.ROUTE_DO_ROUTE_PRIVATE_ADDRESSES, bridge.prefs)
     private val doUseCustomDNSServer = getBooleanPrefValue(OscPrefKey.DNS_DO_USE_CUSTOM_SERVER, bridge.prefs)
-    private val doAddCustomRoutes = getBooleanPrefValue(OscPrefKey.ROUTE_DO_ADD_CUSTOM_ROUTES, bridge.prefs)
 
     internal suspend fun initialize() {
         if (bridge.PPP_IPv4_ENABLED) {
@@ -53,30 +49,11 @@ internal class IPTerminal(private val bridge: SharedBridge) {
             setIPv4BasedRouting()
         }
 
-        if (bridge.PPP_IPv6_ENABLED) {
-            if (bridge.currentIPv6.contentEquals(ByteArray(8))) {
-                bridge.controlMailbox.send(ControlMessage(Where.IPv6, Result.ERR_INVALID_ADDRESS))
-                return
-            }
-
-            ByteArray(16).also { // for link local addresses
-                "FE80".toHexByteArray().copyInto(it)
-                ByteArray(6).copyInto(it, destinationOffset = 2)
-                bridge.currentIPv6.copyInto(it, destinationOffset = 8)
-                bridge.builder.addAddress(InetAddress.getByAddress(it), 64)
-            }
-
-            setIPv6BasedRouting()
-        }
-
-        if (doAddCustomRoutes) {
-            addCustomRoutes()
-        }
-
         if (doEnableAppBasedRule) {
             addAppBasedRules()
         }
 
+        bridge.builder.setUnderlyingNetworks(null)
         bridge.builder.setMtu(bridge.PPP_MTU)
         bridge.builder.setBlocking(true)
 
@@ -89,25 +66,7 @@ internal class IPTerminal(private val bridge: SharedBridge) {
     }
 
     private fun setIPv4BasedRouting() {
-        if (doAddDefaultRoute) {
-            bridge.builder.addRoute("0.0.0.0", 0)
-        }
-
-        if (doRoutePrivateAddresses) {
-            bridge.builder.addRoute("10.0.0.0", 8)
-            bridge.builder.addRoute("172.16.0.0", 12)
-            bridge.builder.addRoute("192.168.0.0", 16)
-        }
-    }
-
-    private fun setIPv6BasedRouting() {
-        if (doAddDefaultRoute) {
-            bridge.builder.addRoute("::", 0)
-        }
-
-        if (doRoutePrivateAddresses) {
-            bridge.builder.addRoute("fc00::", 7)
-        }
+        bridge.builder.addRoute("172.22.0.0", 16)
     }
 
     private fun addAppBasedRules() {
@@ -118,32 +77,6 @@ internal class IPTerminal(private val bridge: SharedBridge) {
                 bridge.builder.addDisallowedApplication(it.packageName)
             }
         }
-    }
-
-    private suspend fun addCustomRoutes(): Boolean {
-        getStringPrefValue(OscPrefKey.ROUTE_CUSTOM_ROUTES, bridge.prefs).split("\n").filter { it.isNotEmpty() }.forEach {
-            val parsed = it.split("/")
-            if (parsed.size != 2) {
-                bridge.controlMailbox.send(ControlMessage(Where.ROUTE, Result.ERR_PARSING_FAILED))
-                return false
-            }
-
-            val address = parsed[0]
-            val prefix = parsed[1].toIntOrNull()
-            if (prefix == null){
-                bridge.controlMailbox.send(ControlMessage(Where.ROUTE, Result.ERR_PARSING_FAILED))
-                return false
-            }
-
-            try {
-                bridge.builder.addRoute(address, prefix)
-            } catch (_: IllegalArgumentException) {
-                bridge.controlMailbox.send(ControlMessage(Where.ROUTE, Result.ERR_PARSING_FAILED))
-                return false
-            }
-        }
-
-        return true
     }
 
     internal fun writePacket(start: Int, size: Int, buffer: ByteBuffer) {

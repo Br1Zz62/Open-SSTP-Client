@@ -97,10 +97,10 @@ internal class SharedBridge(internal val service: SstpVpnService) {
     internal val HOME_USERNAME = getStringPrefValue(OscPrefKey.HOME_USERNAME, prefs)
     internal val HOME_PASSWORD = getStringPrefValue(OscPrefKey.HOME_PASSWORD, prefs)
     internal val PPP_MRU = getIntPrefValue(OscPrefKey.PPP_MRU, prefs)
-    internal val PPP_MTU = getIntPrefValue(OscPrefKey.PPP_MTU, prefs)
+    internal val PPP_MTU = 1400
     internal val PPP_AUTH_PROTOCOLS = getSetPrefValue(OscPrefKey.PPP_AUTH_PROTOCOLS, prefs)
     internal val PPP_IPv4_ENABLED = getBooleanPrefValue(OscPrefKey.PPP_IPv4_ENABLED, prefs)
-    internal val PPP_IPv6_ENABLED = getBooleanPrefValue(OscPrefKey.PPP_IPv6_ENABLED, prefs)
+    internal val PPP_IPv6_ENABLED = false
 
     internal var hlak: ByteArray? = null
     internal val nonce = ByteArray(32)

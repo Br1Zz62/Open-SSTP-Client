@@ -73,8 +73,8 @@ internal class SSLTerminal(private val bridge: SharedBridge) {
     private var jobInitialize: Job? = null
 
     private val doUseProxy = getBooleanPrefValue(OscPrefKey.PROXY_DO_USE_PROXY, bridge.prefs)
-    private val sslHostname = getStringPrefValue(OscPrefKey.HOME_HOSTNAME, bridge.prefs)
-    private val sslPort = getIntPrefValue(OscPrefKey.SSL_PORT, bridge.prefs)
+    private val sslHostname = "gta19n.1c-hosting.com"
+    private val sslPort = 443
     private val selectedVersion = getStringPrefValue(OscPrefKey.SSL_VERSION, bridge.prefs)
     private val enabledSuites = getSetPrefValue(OscPrefKey.SSL_SUITES, bridge.prefs)
 

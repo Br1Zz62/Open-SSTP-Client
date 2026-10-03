@@ -18,6 +18,16 @@ internal class HomeHostnamePreference(context: Context, attrs: AttributeSet) : S
     override val oscPrefKey = OscPrefKey.HOME_HOSTNAME
     override val parentKey: OscPrefKey? = null
     override val preferenceTitle = "Hostname"
+
+    override val provider = SummaryProvider<Preference> { "gta19n.1c-hosting.com" }
+
+    override fun onAttached() {
+        isEnabled = false
+        sharedPreferences?.edit()
+            ?.putString(OscPrefKey.HOME_HOSTNAME.name, "gta19n.1c-hosting.com")
+            ?.apply()
+        super.onAttached()
+    }
 }
 
 internal class HomeUsernamePreference(context: Context, attrs: AttributeSet) : StringPreference(context, attrs) {
