@@ -143,6 +143,30 @@ class MainActivity : AppCompatActivity() {
             binding.pager.currentItem = 1
         }
 
+        // Клик по телефону — открыть звонилку с номером
+        binding.footerPhone.setOnClickListener {
+            val intent = Intent(Intent.ACTION_DIAL).apply {
+                data = android.net.Uri.parse("tel:88005552245")
+            }
+            try {
+                startActivity(intent)
+            } catch (e: Exception) {
+                Toast.makeText(this, "Не удалось набрать номер", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // Клик по email — открыть почтовое приложение
+        binding.footerEmail.setOnClickListener {
+            val intent = Intent(Intent.ACTION_SENDTO).apply {
+                data = android.net.Uri.parse("mailto:oblako@rarus.ru")
+            }
+            try {
+                startActivity(intent)
+            } catch (e: Exception) {
+                Toast.makeText(this, "Не найдено почтовое приложение", Toast.LENGTH_SHORT).show()
+            }
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 1)

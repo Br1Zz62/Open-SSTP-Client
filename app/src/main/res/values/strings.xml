@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Open SSTP Client</string>
+    <string name="settings">Настройки</string>
+    <string name="phone">Телефон</string>
+    <string name="email">Электронная почта</string>
+    <string name="footer_phone">8 800 555-22-45</string>
+    <string name="footer_email">oblako@rarus.ru</string>
+    <string name="footer_version">Облачный сервис «1С-Рарус», версия 1.0.0.0</string>
 </resources>
