@@ -29,21 +29,11 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:padding="12dp"
-            android:src="@android:drawable/ic_menu_preferences"
+            android:src="@drawable/ic_settings"
             app:tint="@color/text_light" />
     </RelativeLayout>
 
-    <!-- Вкладки -->
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/surface_light"
-        app:tabIndicatorColor="@color/blue_primary"
-        app:tabSelectedTextColor="@color/blue_primary"
-        app:tabTextColor="@color/text_light" />
-
-    <!-- Контент вкладок -->
+    <!-- Контент вкладок (вкладки TabLayout убраны) -->
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/pager"
         android:layout_width="match_parent"

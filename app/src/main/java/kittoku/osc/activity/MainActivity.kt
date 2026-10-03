@@ -21,7 +21,6 @@ import androidx.preference.PreferenceGroup
 import androidx.preference.PreferenceManager
 import androidx.preference.forEach
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.google.android.material.tabs.TabLayoutMediator
 import kittoku.osc.BuildConfig
 import kittoku.osc.R
 import kittoku.osc.databinding.ActivityMainBinding
@@ -131,15 +130,15 @@ class MainActivity : AppCompatActivity() {
             binding.pager.adapter = it
         }
 
+        // Клик по логотипу — открываем HOME
+        binding.ivLogo.setOnClickListener {
+            binding.pager.currentItem = 0
+        }
 
-        TabLayoutMediator(binding.tabBar, binding.pager) { tab, position ->
-            tab.text = when (position) {
-                0 -> "HOME"
-                1 -> "SETTING"
-                else -> throw NotImplementedError(position.toString())
-            }
-        }.attach()
-
+        // Клик по шестерёнке — открываем SETTING
+        binding.btnSettings.setOnClickListener {
+            binding.pager.currentItem = 1
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
