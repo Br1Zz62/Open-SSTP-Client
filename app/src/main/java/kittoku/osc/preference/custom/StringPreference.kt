@@ -10,7 +10,7 @@ import kittoku.osc.preference.accessor.getStringPrefValue
 
 internal abstract class StringPreference(context: Context, attrs: AttributeSet) : OscEditTextPreference(context, attrs), OscPreference {
     override val provider = SummaryProvider<Preference> {
-        getStringPrefValue(oscPrefKey, it.sharedPreferences!!).ifEmpty { "[No Value Entered]" }
+        getStringPrefValue(oscPrefKey, it.sharedPreferences!!).ifEmpty { "    " }
     }
 }
 

@@ -24,6 +24,20 @@
             android:scaleType="fitCenter"
             android:src="@drawable/ic_logo_rarus" />
 
+        <!-- Кнопка "три точки" — видна только на вкладке SETTING -->
+        <ImageView
+            android:id="@+id/btnMore"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@id/btnSettings"
+            android:contentDescription="@string/settings"
+            android:padding="12dp"
+            android:src="@drawable/ic_more_vert"
+            android:visibility="gone"
+            app:tint="@color/text_light" />
+
+        <!-- Кнопка "Настройки" -->
         <ImageView
             android:id="@+id/btnSettings"
             android:layout_width="48dp"

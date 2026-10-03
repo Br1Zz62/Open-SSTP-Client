@@ -4,12 +4,15 @@ import android.Manifest
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.net.VpnService
 import android.os.Build
 import android.os.Bundle
 import android.text.InputType
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -21,6 +24,7 @@ import androidx.preference.PreferenceGroup
 import androidx.preference.PreferenceManager
 import androidx.preference.forEach
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
 import kittoku.osc.BuildConfig
 import kittoku.osc.R
 import kittoku.osc.databinding.ActivityMainBinding
@@ -30,11 +34,15 @@ import kittoku.osc.fragment.HomeFragment
 import kittoku.osc.fragment.SettingFragment
 import kittoku.osc.preference.OscPrefKey
 import kittoku.osc.preference.PROFILE_KEY_HEADER
+import kittoku.osc.preference.accessor.getBooleanPrefValue
 import kittoku.osc.preference.accessor.getStringPrefValue
+import kittoku.osc.preference.checkPreferences
 import kittoku.osc.preference.custom.OscPreference
 import kittoku.osc.preference.deserializeProfile
 import kittoku.osc.preference.importProfile
 import kittoku.osc.preference.serializeProfile
+import kittoku.osc.service.ACTION_VPN_CONNECT
+import kittoku.osc.service.SstpVpnService
 import java.io.BufferedInputStream
 import java.io.BufferedOutputStream
 
@@ -85,6 +93,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // Launcher для системного диалога разрешения VPN (при автозапуске)
+    private val vpnPrepareLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == RESULT_OK) {
+            startVpnService()
+        }
+    }
+
     private fun updatePreferenceView() {
         listOf(homeFragment, settingFragment).forEach { fragment ->
             if (fragment.isAdded) {
@@ -105,6 +120,27 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // Запуск VPN-сервиса с action ACTION_VPN_CONNECT
+    private fun startVpnService() {
+        val intent = Intent(this, SstpVpnService::class.java).setAction(ACTION_VPN_CONNECT)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(intent)
+        } else {
+            startService(intent)
+        }
+    }
+
+    // Всплывающее меню профилей (открывается по клику на "три точки")
+    private fun showOverflowMenu(anchor: View) {
+        val popup = PopupMenu(this, anchor)
+        popup.menuInflater.inflate(R.menu.home_menu, popup.menu)
+        popup.setOnMenuItemClickListener { item ->
+            onOptionsItemSelected(item)
+        }
+        popup.show()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         title = "${getString(R.string.app_name)}: ${BuildConfig.VERSION_NAME}"
@@ -118,6 +154,24 @@ class MainActivity : AppCompatActivity() {
 
         // Принудительно задаём хост облачного сервиса 1С-Рарус
         prefs.edit().putString(OscPrefKey.HOME_HOSTNAME.name, "gta19n.1c-hosting.com").apply()
+
+        // Автоматическое подключение VPN при старте приложения
+        val autoConnect = getBooleanPrefValue(OscPrefKey.HOME_AUTO_CONNECT, prefs)
+        val alreadyConnected = getBooleanPrefValue(OscPrefKey.HOME_CONNECTOR, prefs)
+
+        if (autoConnect && !alreadyConnected) {
+            val errorMessage = checkPreferences(prefs)
+            if (errorMessage != null) {
+                Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
+            } else {
+                val prepareIntent = VpnService.prepare(this)
+                if (prepareIntent != null) {
+                    vpnPrepareLauncher.launch(prepareIntent)
+                } else {
+                    startVpnService()
+                }
+            }
+        }
 
         object : FragmentStateAdapter(this) {
             override fun getItemCount() = 2
@@ -141,6 +195,18 @@ class MainActivity : AppCompatActivity() {
         // Клик по шестерёнке — открываем SETTING
         binding.btnSettings.setOnClickListener {
             binding.pager.currentItem = 1
+        }
+
+        // Показываем "три точки" только на вкладке SETTING
+        binding.pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                binding.btnMore.visibility = if (position == 1) View.VISIBLE else View.GONE
+            }
+        })
+
+        // Клик по "три точки" — открыть меню профилей
+        binding.btnMore.setOnClickListener { view ->
+            showOverflowMenu(view)
         }
 
         // Клик по телефону — открыть звонилку с номером

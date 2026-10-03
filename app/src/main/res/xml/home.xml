@@ -3,6 +3,7 @@
     <kittoku.osc.preference.custom.HomeUsernamePreference android:key="HOME_USERNAME"/>
     <kittoku.osc.preference.custom.HomePasswordPreference android:key="HOME_PASSWORD"/>
     <kittoku.osc.preference.custom.ForgotPasswordPreference android:key="FORGOT_PASSWORD"/>
+    <kittoku.osc.preference.custom.AutoConnectPreference android:key="HOME_AUTO_CONNECT"/>
     <kittoku.osc.preference.custom.HomeConnectorPreference android:key="HOME_CONNECTOR" />
 
     <PreferenceCategory>

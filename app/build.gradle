@@ -4,6 +4,9 @@ plugins {
     id 'org.jetbrains.kotlin.plugin.serialization' version '2.4.10'
 }
 
+// Имя версии приложения (используется и в манифесте, и в имени APK)
+def appVersionName = "1.0.0.0"
+
 android {
     namespace 'kittoku.osc'
 
@@ -13,8 +16,8 @@ android {
         applicationId "kittoku.osc"
         minSdk 23
         targetSdk 36
-        versionCode 50
-        versionName "1.10.3"
+        versionCode 1
+        versionName appVersionName
 
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
@@ -38,6 +41,15 @@ android {
     buildFeatures {
         viewBinding true
         buildConfig true
+    }
+
+    // Кастомное имя для итогового APK-файла
+    androidComponents {
+        onVariants(selector().all()) { variant ->
+            variant.outputs.forEach { output ->
+                output.outputFileName.set("Rent1CforAndroid-${variant.name}-${appVersionName}.apk")
+            }
+        }
     }
 }
 
