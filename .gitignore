@@ -8,3 +8,4 @@
 /local.properties
 /playground
 /releases
+gradle/gradle-daemon-jvm.properties
