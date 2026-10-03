@@ -42,10 +42,10 @@ internal abstract class SummaryPreference(context: Context, attrs: AttributeSet)
 internal class HomeStatusPreference(context: Context, attrs: AttributeSet) : SummaryPreference(context, attrs) {
     override val oscPrefKey = OscPrefKey.HOME_STATUS
     override val parentKey: OscPrefKey? = null
-    override val preferenceTitle = "Current Status"
+    override val preferenceTitle = "Статус подключения"
 
     override fun updateView() {
-        summary = getStringPrefValue(oscPrefKey, sharedPreferences!!).ifEmpty { "[No Connection Established]" }
+        summary = getStringPrefValue(oscPrefKey, sharedPreferences!!).ifEmpty { "Отключено" }
     }
 }
 
