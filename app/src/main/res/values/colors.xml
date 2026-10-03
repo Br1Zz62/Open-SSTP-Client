@@ -2,6 +2,7 @@
 <resources>
     <!-- Основной синий цвет 1С (акцент) -->
     <color name="blue_primary">#0055A5</color>
+
     <!-- Более темный синий для нажатий и вариантов -->
     <color name="blue_variant">#004080</color>
 
@@ -10,6 +11,10 @@
     <color name="black">#FF000000</color>
     <color name="background_light">#F5F5F5</color> <!-- Светло-серый фон как на ПК-версии -->
     <color name="grey_text">#757575</color> <!-- Для второстепенного текста -->
+
+    <!-- Тема-зависимые цвета (переопределяются в values-night/colors.xml) -->
+    <color name="surface_light">#FFFFFFFF</color>   <!-- фон панели и вкладок (светлая тема) -->
+    <color name="text_light">#1A1A1A</color>        <!-- иконки и неактивный текст (светлая тема) -->
 
     <!-- Оставляем старые имена, чтобы ничего не сломалось, но меняем их значения на новые -->
     <color name="teal_700">@color/blue_primary</color>

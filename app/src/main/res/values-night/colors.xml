@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Переопределяем только то, что должно отличаться в тёмной теме -->
+    <color name="background_light">#121212</color>
+    <color name="surface_light">#1E1E1E</color>
+    <color name="text_light">#E0E0E0</color>
+</resources>
