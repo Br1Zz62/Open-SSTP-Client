@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="teal_700">#FF00796B</color>
-    <color name="teal_A700">#00BFA5</color>
-    <color name="deep_orange_700">#FFE64A19</color>
-    <color name="black">#FF000000</color>
+    <!-- Основной синий цвет 1С (акцент) -->
+    <color name="blue_primary">#0055A5</color>
+    <!-- Более темный синий для нажатий и вариантов -->
+    <color name="blue_variant">#004080</color>
+
+    <!-- Цвета текста и фона -->
     <color name="white">#FFFFFFFF</color>
+    <color name="black">#FF000000</color>
+    <color name="background_light">#F5F5F5</color> <!-- Светло-серый фон как на ПК-версии -->
+    <color name="grey_text">#757575</color> <!-- Для второстепенного текста -->
+
+    <!-- Оставляем старые имена, чтобы ничего не сломалось, но меняем их значения на новые -->
+    <color name="teal_700">@color/blue_primary</color>
+    <color name="teal_A700">@color/blue_variant</color>
+    <color name="deep_orange_700">@color/blue_primary</color> <!-- Переключатели тоже станут синими -->
 </resources>
