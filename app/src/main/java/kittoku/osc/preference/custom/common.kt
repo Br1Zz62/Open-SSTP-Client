@@ -5,6 +5,7 @@ import android.text.InputType
 import android.util.AttributeSet
 import androidx.preference.EditTextPreference
 import androidx.preference.Preference
+import kittoku.osc.R
 import kittoku.osc.preference.DEFAULT_INT_MAP
 import kittoku.osc.preference.DEFAULT_STRING_MAP
 import kittoku.osc.preference.OscPrefKey
@@ -32,6 +33,10 @@ internal abstract class OscEditTextPreference(context: Context, attrs: Attribute
     protected open val inputType = InputType.TYPE_CLASS_TEXT
     protected open val hint: String? = null
     protected open val provider: SummaryProvider<out Preference> = SimpleSummaryProvider.getInstance()
+
+    init {
+        layoutResource = R.layout.preference_field
+    }
 
     override fun updateView() {
         text = when (oscPrefKey) {

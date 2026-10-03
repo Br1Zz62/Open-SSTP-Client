@@ -20,4 +20,5 @@
     <color name="teal_700">@color/blue_primary</color>
     <color name="teal_A700">@color/blue_variant</color>
     <color name="deep_orange_700">@color/blue_primary</color> <!-- Переключатели тоже станут синими -->
+    <color name="field_border">#B0BEC5</color>
 </resources>

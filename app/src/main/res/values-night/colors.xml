@@ -4,4 +4,5 @@
     <color name="background_light">#121212</color>
     <color name="surface_light">#1E1E1E</color>
     <color name="text_light">#E0E0E0</color>
+    <color name="field_border">#4A4A4A</color>
 </resources>
