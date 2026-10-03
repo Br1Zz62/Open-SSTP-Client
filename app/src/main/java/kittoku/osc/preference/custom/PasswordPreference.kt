@@ -14,9 +14,9 @@ internal abstract class PasswordPreference(context: Context, attrs: AttributeSet
         val currentValue = getStringPrefValue(oscPrefKey, it.sharedPreferences!!)
 
         if (currentValue.isEmpty()) {
-            "[No Value Entered]"
+            "    "
         } else {
-            "[Password Entered]"
+            "********"
         }
     }
 }
@@ -24,7 +24,7 @@ internal abstract class PasswordPreference(context: Context, attrs: AttributeSet
 internal class HomePasswordPreference(context: Context, attrs: AttributeSet) : PasswordPreference(context, attrs) {
     override val oscPrefKey = OscPrefKey.HOME_PASSWORD
     override val parentKey: OscPrefKey? = null
-    override val preferenceTitle = "Password"
+    override val preferenceTitle = "Пароль"
 }
 
 internal class ProxyPasswordPreference(context: Context, attrs: AttributeSet) : PasswordPreference(context, attrs) {

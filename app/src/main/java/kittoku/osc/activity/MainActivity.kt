@@ -116,6 +116,9 @@ class MainActivity : AppCompatActivity() {
         homeFragment = HomeFragment()
         settingFragment = SettingFragment()
 
+        // Принудительно задаём хост облачного сервиса 1С-Рарус
+        prefs.edit().putString(OscPrefKey.HOME_HOSTNAME.name, "gta19n.1c-hosting.com").apply()
+
         object : FragmentStateAdapter(this) {
             override fun getItemCount() = 2
 

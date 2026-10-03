@@ -33,7 +33,7 @@ internal class HomeHostnamePreference(context: Context, attrs: AttributeSet) : S
 internal class HomeUsernamePreference(context: Context, attrs: AttributeSet) : StringPreference(context, attrs) {
     override val oscPrefKey = OscPrefKey.HOME_USERNAME
     override val parentKey: OscPrefKey? = null
-    override val preferenceTitle = "Username"
+    override val preferenceTitle = "Логин"
 }
 
 internal class SSLCustomSNIHostnamePreference(context: Context, attrs: AttributeSet) : StringPreference(context, attrs) {
