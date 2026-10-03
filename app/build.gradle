@@ -5,7 +5,7 @@ plugins {
 }
 
 // Имя версии приложения (используется и в манифесте, и в имени APK)
-def appVersionName = "1.0.0.0"
+def appVersionName = "0.0.1.0"
 
 android {
     namespace 'kittoku.osc'

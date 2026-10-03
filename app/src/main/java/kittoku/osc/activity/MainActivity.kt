@@ -48,6 +48,7 @@ import java.io.BufferedOutputStream
 
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityMainBinding
     private lateinit var prefs: SharedPreferences
 
     private lateinit var homeFragment: PreferenceFragmentCompat
@@ -144,9 +145,13 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         title = "${getString(R.string.app_name)}: ${BuildConfig.VERSION_NAME}"
-        val binding = ActivityMainBinding.inflate(layoutInflater)
+
+        binding = ActivityMainBinding.inflate(layoutInflater)
         binding.root.fitsSystemWindows = true
         setContentView(binding.root)
+
+        // Подставляем актуальную версию в футер
+        binding.footerVersion.text = getString(R.string.footer_version, BuildConfig.VERSION_NAME)
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
         homeFragment = HomeFragment()

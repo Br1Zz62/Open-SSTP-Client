@@ -5,7 +5,7 @@
     <string name="email">Электронная почта</string>
     <string name="footer_phone">8 800 555-22-45</string>
     <string name="footer_email">oblako@rarus.ru</string>
-    <string name="footer_version">Облачный сервис «1С-Рарус», версия 1.0.0.0</string>
+    <string name="footer_version">Облачный сервис «1С-Рарус», версия %1$s</string>
     <string name="connect">Подключить</string>
     <string name="disconnect">Отключить</string>
 </resources>
