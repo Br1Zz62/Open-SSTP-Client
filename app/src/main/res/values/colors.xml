@@ -6,19 +6,30 @@
     <!-- Более темный синий для нажатий и вариантов -->
     <color name="blue_variant">#004080</color>
 
+    <!-- Фон футера (тёмно-синий, как в ПК-версии) -->
+    <color name="footer_bg">#1A3D64</color>
+
     <!-- Цвета текста и фона -->
     <color name="white">#FFFFFFFF</color>
     <color name="black">#FF000000</color>
-    <color name="background_light">#F5F5F5</color> <!-- Светло-серый фон как на ПК-версии -->
-    <color name="grey_text">#757575</color> <!-- Для второстепенного текста -->
+    <color name="background_light">#F5F5F5</color>
+    <color name="grey_text">#757575</color>
 
-    <!-- Тема-зависимые цвета (переопределяются в values-night/colors.xml) -->
-    <color name="surface_light">#FFFFFFFF</color>   <!-- фон панели и вкладок (светлая тема) -->
-    <color name="text_light">#1A1A1A</color>        <!-- иконки и неактивный текст (светлая тема) -->
+    <!-- Тема-зависимые цвета -->
+    <color name="surface_light">#FFFFFFFF</color>
+    <color name="text_light">#1A1A1A</color>
 
-    <!-- Оставляем старые имена, чтобы ничего не сломалось, но меняем их значения на новые -->
+    <!-- Кнопка "Выход" в верхней панели: круглый фон -->
+    <color name="close_button_bg">#D5D5D5</color>
+
+    <!-- Цвета для векторных логотипов (переопределяются в values-night) -->
+    <color name="brand_text_blue">#1270B3</color>
+    <color name="brand_gradient_top">#0D6EC9</color>
+    <color name="brand_gradient_bottom">#0653AA</color>
+
+    <!-- Алиасы -->
     <color name="teal_700">@color/blue_primary</color>
     <color name="teal_A700">@color/blue_variant</color>
-    <color name="deep_orange_700">@color/blue_primary</color> <!-- Переключатели тоже станут синими -->
+    <color name="deep_orange_700">@color/blue_primary</color>
     <color name="field_border">#B0BEC5</color>
 </resources>

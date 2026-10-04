@@ -9,6 +9,4 @@
     <PreferenceCategory>
         <kittoku.osc.preference.custom.HomeStatusPreference android:key="HOME_STATUS"/>
     </PreferenceCategory>
-
-    <kittoku.osc.preference.custom.BrandLogoPreference />
 </PreferenceScreen>

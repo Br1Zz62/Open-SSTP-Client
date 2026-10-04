@@ -19,7 +19,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.preference.EditTextPreference
-import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceGroup
 import androidx.preference.PreferenceManager
 import androidx.preference.forEach
@@ -175,6 +174,32 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 
+    // Единая точка обновления видимости всех элементов, зависящих от вкладки.
+    // Вызывается из onResume (в т.ч. после поворота) и из onPageSelected.
+    private fun applyTabVisibility() {
+        val onSetting = binding.pager.currentItem == 1
+
+        binding.btnMore.visibility = if (onSetting) View.VISIBLE else View.GONE
+        binding.leftPanel?.visibility = if (onSetting) View.GONE else View.VISIBLE
+        binding.btnHome?.visibility = if (onSetting) View.VISIBLE else View.GONE
+    }
+
+    // Переключение на HOME
+    private fun goHome() {
+        binding.pager.post {
+            binding.pager.setCurrentItem(0, false)
+            applyTabVisibility()
+        }
+    }
+
+    // Переключение на SETTING
+    private fun goSetting() {
+        binding.pager.post {
+            binding.pager.setCurrentItem(1, false)
+            applyTabVisibility()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         title = "${getString(R.string.app_name)}: ${BuildConfig.VERSION_NAME}"
@@ -183,7 +208,7 @@ class MainActivity : AppCompatActivity() {
         binding.root.fitsSystemWindows = true
         setContentView(binding.root)
 
-        // Подставляем актуальную версию в футер
+        // Полная версия в футере
         binding.footerVersion.text = getString(R.string.footer_version, BuildConfig.VERSION_NAME)
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
@@ -225,17 +250,27 @@ class MainActivity : AppCompatActivity() {
             binding.pager.adapter = it
         }
 
-        // Отключаем свайп между вкладками — переключаемся только по лого/шестерёнке
+        // Отключаем свайп между вкладками
         binding.pager.isUserInputEnabled = false
 
-        // Клик по логотипу — открываем HOME
+        // Клик по логотипу в хэдере (портрет) — HOME
         binding.ivLogo.setOnClickListener {
-            binding.pager.currentItem = 0
+            goHome()
         }
 
-        // Клик по шестерёнке — открываем SETTING
+        // Клик по левой панели (ландшафт) — HOME
+        binding.leftPanel?.setOnClickListener {
+            goHome()
+        }
+
+        // Клик по кнопке "Домой" (облако в углу, ландшафт) — HOME
+        binding.btnHome?.setOnClickListener {
+            goHome()
+        }
+
+        // Клик по шестерёнке — SETTING
         binding.btnSettings.setOnClickListener {
-            binding.pager.currentItem = 1
+            goSetting()
         }
 
         // Клик по "X" — диалог выхода
@@ -243,10 +278,10 @@ class MainActivity : AppCompatActivity() {
             showExitDialog()
         }
 
-        // Показываем "три точки" только на вкладке SETTING
+        // Смена вкладки пользователем — обновляем видимость
         binding.pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
-                binding.btnMore.visibility = if (position == 1) View.VISIBLE else View.GONE
+                applyTabVisibility()
             }
         })
 
@@ -255,7 +290,7 @@ class MainActivity : AppCompatActivity() {
             showOverflowMenu(view)
         }
 
-        // Клик по телефону — открыть звонилку с номером
+        // Клик по телефону — открыть звонилку
         binding.footerPhone.setOnClickListener {
             val intent = Intent(Intent.ACTION_DIAL).apply {
                 data = android.net.Uri.parse("tel:88005552245")
@@ -284,6 +319,14 @@ class MainActivity : AppCompatActivity() {
                 requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 1)
             }
         }
+    }
+
+    // Срабатывает после onCreate и после возврата из фона. Ключевое место,
+    // которое чинит «логотип на SETTING после поворота»: ViewPager2 может
+    // восстановить позицию без вызова onPageSelected.
+    override fun onResume() {
+        super.onResume()
+        applyTabVisibility()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -321,10 +364,6 @@ class MainActivity : AppCompatActivity() {
                 prefs.edit().putBoolean(OscPrefKey.DEVELOPER_MODE.name, newValue).apply()
 
                 invalidateOptionsMenu()
-
-                if (settingFragment.isAdded) {
-                    settingFragment.refreshDeveloperModeVisibility()
-                }
             }
         }
 

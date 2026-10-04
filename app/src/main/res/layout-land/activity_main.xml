@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!-- Верхняя область: две колонки + парящая кнопка "Домой" (только на SETTING) -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <!-- ЛЕВАЯ КОЛОНКА — бренд -->
+            <FrameLayout
+                android:id="@+id/leftPanel"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/surface_light"
+                android:clickable="true"
+                android:focusable="true">
+
+                <include
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    layout="@layout/brand_vertical" />
+            </FrameLayout>
+
+            <!-- ПРАВАЯ КОЛОНКА — приложение без хэдера, кнопки поверх -->
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <!-- Заглушка ivLogo для ViewBinding -->
+                <FrameLayout
+                    android:id="@+id/ivLogo"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:visibility="gone" />
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/pager"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="48dp" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_gravity="top|end"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingEnd="8dp">
+
+                    <ImageView
+                        android:id="@+id/btnMore"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:contentDescription="@string/settings"
+                        android:padding="12dp"
+                        android:src="@drawable/ic_more_vert"
+                        android:visibility="gone"
+                        app:tint="@color/text_light" />
+
+                    <ImageView
+                        android:id="@+id/btnSettings"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:contentDescription="@string/settings"
+                        android:padding="12dp"
+                        android:src="@drawable/ic_settings"
+                        app:tint="@color/text_light" />
+
+                    <ImageView
+                        android:id="@+id/btnClose"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="@drawable/bg_close_button"
+                        android:contentDescription="@string/exit"
+                        android:padding="14dp"
+                        android:src="@drawable/ic_close" />
+                </LinearLayout>
+            </FrameLayout>
+        </LinearLayout>
+
+        <!-- Кнопка "Домой" — облако-пазл в левом верхнем углу.
+             По умолчанию СКРЫТА. Показывается только на SETTING (см. MainActivity). -->
+        <ImageView
+            android:id="@+id/btnHome"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_gravity="top|start"
+            android:contentDescription="@string/app_name"
+            android:padding="12dp"
+            android:src="@drawable/ic_cloud_puzzle"
+            android:visibility="gone" />
+    </FrameLayout>
+
+    <!-- Футер на всю ширину -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_footer"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="12dp"
+        android:paddingTop="6dp"
+        android:paddingEnd="12dp"
+        android:paddingBottom="6dp">
+
+        <LinearLayout
+            android:id="@+id/footerPhone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="11dp"
+                android:layout_height="11dp"
+                android:contentDescription="@string/phone"
+                android:src="@drawable/ic_phone"
+                app:tint="@color/white" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="@string/footer_phone"
+                android:textColor="@color/white"
+                android:textSize="10sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/footerEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="11dp"
+                android:layout_height="11dp"
+                android:contentDescription="@string/email"
+                android:src="@drawable/ic_email"
+                app:tint="@color/white" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="@string/footer_email"
+                android:textColor="@color/white"
+                android:textSize="10sp" />
+        </LinearLayout>
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/footerVersion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:alpha="0.9"
+            android:maxLines="1"
+            android:text="@string/footer_version"
+            android:textColor="@color/white"
+            android:textSize="10sp" />
+    </LinearLayout>
+
+</LinearLayout>

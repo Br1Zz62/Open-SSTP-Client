@@ -8,6 +8,8 @@ import androidx.activity.result.contract.ActivityResultContracts.StartActivityFo
 import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.PreferenceGroup
+import androidx.preference.forEach
 import kittoku.osc.R
 import kittoku.osc.activity.BLANK_ACTIVITY_TYPE_APPS
 import kittoku.osc.activity.BlankActivity
@@ -25,6 +27,15 @@ internal class SettingFragment : PreferenceFragmentCompat() {
     private lateinit var certDirPref: DirectoryPreference
     private lateinit var logDirPref: DirectoryPreference
     private lateinit var selectAppsPref: RouteSelectedAppsPreference
+
+    // Реагируем на изменение режима разработчика в prefs напрямую.
+    // Это сработает даже если MainActivity держит ссылку на другой экземпляр
+    // этого фрагмента (типичная ситуация в ландшафте после пересоздания Activity).
+    private val devModeListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+        if (key == OscPrefKey.DEVELOPER_MODE.name) {
+            refreshDeveloperModeVisibility()
+        }
+    }
 
     private val certDirLauncher = registerForActivityResult(StartActivityForResult()) { result ->
         val uri = if (result.resultCode == Activity.RESULT_OK) result.data?.data?.also {
@@ -69,15 +80,34 @@ internal class SettingFragment : PreferenceFragmentCompat() {
 
     override fun onResume() {
         super.onResume()
+        prefs.registerOnSharedPreferenceChangeListener(devModeListener)
         refreshDeveloperModeVisibility()
     }
 
-    /** Вызывается из MainActivity после переключения «Режима разработчика». */
+    override fun onPause() {
+        prefs.unregisterOnSharedPreferenceChangeListener(devModeListener)
+        super.onPause()
+    }
+
+    // Применяет видимость технических категорий по текущему значению DEVELOPER_MODE.
+    // Обходим всё дерево preferences в ширину — так надёжнее, чем findPreference по ключу.
     fun refreshDeveloperModeVisibility() {
         val devMode = getBooleanPrefValue(OscPrefKey.DEVELOPER_MODE, prefs)
+        val screen = preferenceScreen ?: return
 
-        TECH_CATEGORY_KEYS.forEach { key ->
-            findPreference<PreferenceCategory>(key)?.isVisible = devMode
+        val queue = ArrayDeque<PreferenceGroup>()
+        queue.addLast(screen)
+
+        while (queue.isNotEmpty()) {
+            val group = queue.removeFirst()
+            group.forEach { pref ->
+                if (pref is PreferenceCategory && pref.key in TECH_CATEGORY_KEYS) {
+                    pref.isVisible = devMode
+                }
+                if (pref is PreferenceGroup) {
+                    queue.addLast(pref)
+                }
+            }
         }
     }
 
