@@ -9,3 +9,6 @@
 /playground
 /releases
 gradle/gradle-daemon-jvm.properties
+# Keystore — никогда не пушим в публичный репо
+*.jks
+keystore.properties

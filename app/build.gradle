@@ -7,6 +7,14 @@ plugins {
 // Имя версии приложения (используется и в манифесте, и в имени APK)
 def appVersionName = "0.0.1.3"
 
+// Загружаем данные ключа подписи из keystore.properties
+// (файл в .gitignore, никогда не попадает в репозиторий)
+def keystorePropsFile = rootProject.file("keystore.properties")
+def keystoreProps = new Properties()
+if (keystorePropsFile.exists()) {
+    keystoreProps.load(new FileInputStream(keystorePropsFile))
+}
+
 android {
     namespace 'kittoku.osc'
 
@@ -22,9 +30,28 @@ android {
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
 
+    // Настройки подписи release-сборки
+    signingConfigs {
+        release {
+            if (keystorePropsFile.exists()) {
+                storeFile rootProject.file(keystoreProps['storeFile'])
+                storePassword keystoreProps['storePassword']
+                keyAlias keystoreProps['keyAlias']
+                keyPassword keystoreProps['keyPassword']
+            }
+        }
+    }
+
     buildTypes {
         release {
+            // Отключаем минификацию — для личного использования и без ProGuard-правил
+            // так проще: не нужно бояться, что что-то нужное вырежет.
             minifyEnabled false
+            shrinkResources false
+
+            // Подписываем release тем же ключом, что и для будущих обновлений
+            signingConfig signingConfigs.release
+
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -43,7 +70,7 @@ android {
         buildConfig true
     }
 
-    // Кастомное имя для итогового APK-файла
+    // Кастомное имя APK для обоих вариантов
     androidComponents {
         onVariants(selector().all()) { variant ->
             variant.outputs.forEach { output ->
