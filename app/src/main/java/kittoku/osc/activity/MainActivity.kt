@@ -42,6 +42,7 @@ import kittoku.osc.preference.deserializeProfile
 import kittoku.osc.preference.importProfile
 import kittoku.osc.preference.serializeProfile
 import kittoku.osc.service.ACTION_VPN_CONNECT
+import kittoku.osc.service.ACTION_VPN_DISCONNECT
 import kittoku.osc.service.SstpVpnService
 import java.io.BufferedInputStream
 import java.io.BufferedOutputStream
@@ -51,8 +52,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var prefs: SharedPreferences
 
-    private lateinit var homeFragment: PreferenceFragmentCompat
-    private lateinit var settingFragment: PreferenceFragmentCompat
+    private lateinit var homeFragment: HomeFragment
+    private lateinit var settingFragment: SettingFragment
 
     private val dialogResource: Int by lazy { EditTextPreference(this).dialogLayoutResource }
 
@@ -75,7 +76,7 @@ class MainActivity : AppCompatActivity() {
             if (profile == null) {
                 Toast.makeText(this, "IMPORT FAILED", Toast.LENGTH_SHORT).show()
             } else {
-                importProfile(profile,prefs)
+                importProfile(profile, prefs)
                 updatePreferenceView()
                 Toast.makeText(this, "PROFILE IMPORTED", Toast.LENGTH_SHORT).show()
             }
@@ -136,10 +137,42 @@ class MainActivity : AppCompatActivity() {
     private fun showOverflowMenu(anchor: View) {
         val popup = PopupMenu(this, anchor)
         popup.menuInflater.inflate(R.menu.home_menu, popup.menu)
+
+        // Отображаем галочку "Режим разработчика"
+        val devMode = getBooleanPrefValue(OscPrefKey.DEVELOPER_MODE, prefs)
+        popup.menu.findItem(R.id.developer_mode)?.isChecked = devMode
+
         popup.setOnMenuItemClickListener { item ->
             onOptionsItemSelected(item)
         }
         popup.show()
+    }
+
+    // Диалог выхода по кнопке "X" в верхней панели
+    private fun showExitDialog() {
+        val vpnActive = getBooleanPrefValue(OscPrefKey.HOME_CONNECTOR, prefs)
+
+        AlertDialog.Builder(this)
+            .setTitle(R.string.exit_dialog_title)
+            .setMessage(
+                if (vpnActive) R.string.exit_dialog_message_vpn
+                else R.string.exit_dialog_message
+            )
+            .setPositiveButton(
+                if (vpnActive) R.string.exit_dialog_yes_disconnect
+                else R.string.exit_dialog_yes
+            ) { _, _ ->
+                if (vpnActive) {
+                    startService(
+                        Intent(this, SstpVpnService::class.java).setAction(ACTION_VPN_DISCONNECT)
+                    )
+                    binding.root.postDelayed({ finishAffinity() }, 200)
+                } else {
+                    finishAffinity()
+                }
+            }
+            .setNegativeButton(R.string.exit_dialog_no, null)
+            .show()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -192,6 +225,9 @@ class MainActivity : AppCompatActivity() {
             binding.pager.adapter = it
         }
 
+        // Отключаем свайп между вкладками — переключаемся только по лого/шестерёнке
+        binding.pager.isUserInputEnabled = false
+
         // Клик по логотипу — открываем HOME
         binding.ivLogo.setOnClickListener {
             binding.pager.currentItem = 0
@@ -200,6 +236,11 @@ class MainActivity : AppCompatActivity() {
         // Клик по шестерёнке — открываем SETTING
         binding.btnSettings.setOnClickListener {
             binding.pager.currentItem = 1
+        }
+
+        // Клик по "X" — диалог выхода
+        binding.btnClose.setOnClickListener {
+            showExitDialog()
         }
 
         // Показываем "три точки" только на вкладке SETTING
@@ -251,6 +292,13 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        val devMode = getBooleanPrefValue(OscPrefKey.DEVELOPER_MODE, prefs)
+        menu?.findItem(R.id.developer_mode)?.isChecked = devMode
+
+        return super.onPrepareOptionsMenu(menu)
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.load_profile -> {
@@ -267,6 +315,17 @@ class MainActivity : AppCompatActivity() {
             R.id.export_profile -> showExportDialog()
 
             R.id.reload_defaults -> showReloadDialog()
+
+            R.id.developer_mode -> {
+                val newValue = !getBooleanPrefValue(OscPrefKey.DEVELOPER_MODE, prefs)
+                prefs.edit().putBoolean(OscPrefKey.DEVELOPER_MODE.name, newValue).apply()
+
+                invalidateOptionsMenu()
+
+                if (settingFragment.isAdded) {
+                    settingFragment.refreshDeveloperModeVisibility()
+                }
+            }
         }
 
         return true

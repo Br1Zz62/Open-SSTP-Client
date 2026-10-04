@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Rent1C for Android</string>
     <string name="settings">Настройки</string>
+    <string name="exit">Выход</string>
     <string name="phone">Телефон</string>
     <string name="email">Электронная почта</string>
     <string name="footer_phone">8 800 555-22-45</string>
@@ -8,4 +9,12 @@
     <string name="footer_version">Облачный сервис «1С-Рарус», версия %1$s</string>
     <string name="connect">Подключить</string>
     <string name="disconnect">Отключить</string>
+
+    <!-- Диалог выхода -->
+    <string name="exit_dialog_title">Выход</string>
+    <string name="exit_dialog_message">Вы действительно хотите выйти?</string>
+    <string name="exit_dialog_message_vpn">VPN всё ещё подключён. Отключить соединение и выйти?</string>
+    <string name="exit_dialog_yes">Да</string>
+    <string name="exit_dialog_yes_disconnect">Да, отключить и выйти</string>
+    <string name="exit_dialog_no">Нет</string>
 </resources>

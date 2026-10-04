@@ -1,13 +1,18 @@
 package kittoku.osc.preference.custom
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.AttributeSet
 import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.preference.Preference
 import androidx.preference.PreferenceViewHolder
 import kittoku.osc.preference.LIST_TYPE_ALLOWED
 import kittoku.osc.preference.OscPrefKey
+import kittoku.osc.preference.accessor.getBooleanPrefValue
 import kittoku.osc.preference.accessor.getSetPrefValue
 import kittoku.osc.preference.accessor.getStringPrefValue
 
@@ -42,10 +47,77 @@ internal abstract class SummaryPreference(context: Context, attrs: AttributeSet)
 internal class HomeStatusPreference(context: Context, attrs: AttributeSet) : SummaryPreference(context, attrs) {
     override val oscPrefKey = OscPrefKey.HOME_STATUS
     override val parentKey: OscPrefKey? = null
-    override val preferenceTitle = "Параметры подключения"
+    override val preferenceTitle = "Статус подключения"
+
+    // Второй слушатель: HOME_STATUS меняется сервисом во время работы,
+    // HOME_CONNECTOR — переключается при подключении/отключении VPN.
+    // Реагируем на оба, чтобы summary всегда был актуальным.
+    private val connectorListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+        if (key == OscPrefKey.HOME_CONNECTOR.name) {
+            updateView()
+        }
+    }
+
+    init {
+        onPreferenceClickListener = Preference.OnPreferenceClickListener {
+            val prefs = sharedPreferences!!
+            val connected = getBooleanPrefValue(OscPrefKey.HOME_CONNECTOR, prefs)
+
+            if (connected) {
+                val details = getStringPrefValue(OscPrefKey.HOME_STATUS, prefs)
+                    .ifEmpty { "Нет данных" }
+
+                showCopyableDialog(
+                    title = "Параметры подключения",
+                    text = details
+                )
+            } else {
+                showCopyableDialog(
+                    title = "Статус подключения",
+                    text = "VPN не подключён"
+                )
+            }
+
+            true
+        }
+    }
+
+    override fun onAttached() {
+        super.onAttached()
+        sharedPreferences!!.registerOnSharedPreferenceChangeListener(connectorListener)
+    }
+
+    override fun onDetached() {
+        sharedPreferences!!.unregisterOnSharedPreferenceChangeListener(connectorListener)
+        super.onDetached()
+    }
 
     override fun updateView() {
-        summary = getStringPrefValue(oscPrefKey, sharedPreferences!!).ifEmpty { "Отключено" }
+        val connected = getBooleanPrefValue(OscPrefKey.HOME_CONNECTOR, sharedPreferences!!)
+        summary = if (connected) "Подключено" else "Отключено"
+    }
+
+    // Диалог с выделяемым текстом и кнопкой "Копировать"
+    private fun showCopyableDialog(title: String, text: String) {
+        val padding = (16 * context.resources.displayMetrics.density).toInt()
+
+        val textView = TextView(context).apply {
+            this.text = text
+            textSize = 14f
+            setTextIsSelectable(true)
+            setPadding(padding, padding / 2, padding, padding / 2)
+        }
+
+        AlertDialog.Builder(context)
+            .setTitle(title)
+            .setView(textView)
+            .setPositiveButton("Копировать") { _, _ ->
+                val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                clipboard.setPrimaryClip(ClipData.newPlainText("Статус подключения", text))
+                Toast.makeText(context, "Скопировано", Toast.LENGTH_SHORT).show()
+            }
+            .setNegativeButton("OK", null)
+            .show()
     }
 }
 

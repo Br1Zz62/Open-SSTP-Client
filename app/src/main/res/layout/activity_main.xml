@@ -42,11 +42,23 @@
             android:id="@+id/btnSettings"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
+            android:layout_toStartOf="@id/btnClose"
             android:contentDescription="@string/settings"
             android:padding="12dp"
             android:src="@drawable/ic_settings"
+            app:tint="@color/text_light" />
+
+        <!-- Кнопка "Выход" (X) — крайняя правая -->
+        <ImageView
+            android:id="@+id/btnClose"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:contentDescription="@string/exit"
+            android:padding="12dp"
+            android:src="@drawable/ic_close"
             app:tint="@color/text_light" />
     </RelativeLayout>
 

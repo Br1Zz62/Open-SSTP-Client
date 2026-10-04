@@ -19,4 +19,10 @@
     <item
         android:id="@+id/reload_defaults"
         android:title="Reload Defaults" />
+
+    <item
+        android:id="@+id/developer_mode"
+        android:title="Режим разработчика"
+        android:checkable="true"
+        android:showAsAction="never" />
 </menu>

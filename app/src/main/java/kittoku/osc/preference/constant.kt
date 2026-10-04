@@ -11,8 +11,9 @@ internal enum class OscPrefKey {
     HOME_USERNAME,
     HOME_PASSWORD,
     HOME_CONNECTOR,
-    HOME_AUTO_CONNECT,   // ← новая строка
+    HOME_AUTO_CONNECT,
     HOME_STATUS,
+    DEVELOPER_MODE,       // ← добавлено
     SSL_PORT,
     SSL_VERSION,
     SSL_DO_VERIFY,
@@ -58,7 +59,8 @@ internal enum class OscPrefKey {
 internal val DEFAULT_BOOLEAN_MAP = mapOf(
     OscPrefKey.ROOT_STATE to false,
     OscPrefKey.HOME_CONNECTOR to false,
-    OscPrefKey.HOME_AUTO_CONNECT to false,   // ← новая строка
+    OscPrefKey.HOME_AUTO_CONNECT to false,
+    OscPrefKey.DEVELOPER_MODE to false,   // ← добавлено
     OscPrefKey.SSL_DO_VERIFY to true,
     OscPrefKey.SSL_DO_SPECIFY_CERT to false,
     OscPrefKey.SSL_DO_SELECT_SUITES to false,

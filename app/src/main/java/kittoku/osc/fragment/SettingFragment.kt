@@ -6,12 +6,14 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.preference.Preference
+import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
 import kittoku.osc.R
 import kittoku.osc.activity.BLANK_ACTIVITY_TYPE_APPS
 import kittoku.osc.activity.BlankActivity
 import kittoku.osc.activity.EXTRA_KEY_TYPE
 import kittoku.osc.preference.OscPrefKey
+import kittoku.osc.preference.accessor.getBooleanPrefValue
 import kittoku.osc.preference.accessor.setURIPrefValue
 import kittoku.osc.preference.custom.DirectoryPreference
 import kittoku.osc.preference.custom.RouteSelectedAppsPreference
@@ -65,6 +67,20 @@ internal class SettingFragment : PreferenceFragmentCompat() {
         setSelectAppsListener()
     }
 
+    override fun onResume() {
+        super.onResume()
+        refreshDeveloperModeVisibility()
+    }
+
+    /** Вызывается из MainActivity после переключения «Режима разработчика». */
+    fun refreshDeveloperModeVisibility() {
+        val devMode = getBooleanPrefValue(OscPrefKey.DEVELOPER_MODE, prefs)
+
+        TECH_CATEGORY_KEYS.forEach { key ->
+            findPreference<PreferenceCategory>(key)?.isVisible = devMode
+        }
+    }
+
     private fun setCertDirListener() {
         certDirPref.onPreferenceClickListener = Preference.OnPreferenceClickListener {
             Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).also {
@@ -96,5 +112,19 @@ internal class SettingFragment : PreferenceFragmentCompat() {
 
             true
         }
+    }
+
+    companion object {
+        private val TECH_CATEGORY_KEYS = listOf(
+            "cat_ssl",
+            "cat_proxy",
+            "cat_ppp",
+            "cat_ppp_auth",
+            "cat_ppp_net",
+            "cat_dns",
+            "cat_routing",
+            "cat_reconnection",
+            "cat_log",
+        )
     }
 }
