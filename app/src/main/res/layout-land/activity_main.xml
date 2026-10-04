@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <!-- Верхняя область: две колонки + парящая кнопка "Домой" (только на SETTING) -->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -16,7 +15,6 @@
             android:layout_height="match_parent"
             android:orientation="horizontal">
 
-            <!-- ЛЕВАЯ КОЛОНКА — бренд -->
             <FrameLayout
                 android:id="@+id/leftPanel"
                 android:layout_width="0dp"
@@ -26,6 +24,15 @@
                 android:clickable="true"
                 android:focusable="true">
 
+                <!-- Водяной знак "1С": fitXY растянет силуэт на всю область -->
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@null"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_1c_background"
+                    app:tint="@color/brand_watermark" />
+
                 <include
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -33,13 +40,11 @@
                     layout="@layout/brand_vertical" />
             </FrameLayout>
 
-            <!-- ПРАВАЯ КОЛОНКА — приложение без хэдера, кнопки поверх -->
             <FrameLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1">
 
-                <!-- Заглушка ivLogo для ViewBinding -->
                 <FrameLayout
                     android:id="@+id/ivLogo"
                     android:layout_width="0dp"
@@ -91,8 +96,6 @@
             </FrameLayout>
         </LinearLayout>
 
-        <!-- Кнопка "Домой" — облако-пазл в левом верхнем углу.
-             По умолчанию СКРЫТА. Показывается только на SETTING (см. MainActivity). -->
         <ImageView
             android:id="@+id/btnHome"
             android:layout_width="56dp"
@@ -104,7 +107,6 @@
             android:visibility="gone" />
     </FrameLayout>
 
-    <!-- Футер на всю ширину -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

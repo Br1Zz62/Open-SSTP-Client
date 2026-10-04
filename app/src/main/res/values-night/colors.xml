@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="background_light">#121212</color>
-    <color name="surface_light">#1E1E1E</color>
+    <color name="surface_light">#0D0D0D</color>
     <color name="text_light">#E0E0E0</color>
     <color name="field_border">#4A4A4A</color>
 
-    <!-- Кнопка "Выход" — на тёмной теме круг чуть светлее фона -->
     <color name="close_button_bg">#4A4A4A</color>
-
-    <!-- Футер: в тёмной теме — ещё темнее -->
     <color name="footer_bg">#0F2A47</color>
 
-    <!-- Цвета логотипов: в тёмной теме светлее, чтобы читались -->
     <color name="brand_text_blue">#5EA9E8</color>
     <color name="brand_gradient_top">#4A9EE0</color>
     <color name="brand_gradient_bottom">#2D74BE</color>
+
+    <!-- Водяной знак "1С": совсем чёрный, но с alpha ~75% —
+         на фоне #0D0D0D получается едва различимый тёмный силуэт.
+         Если слишком тёмно — снижай до #A0000000;
+         если слишком заметно — увеличь до #FF000000. -->
+    <color name="brand_watermark">#C0000000</color>
 </resources>

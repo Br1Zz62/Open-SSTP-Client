@@ -27,6 +27,10 @@
     <color name="brand_gradient_top">#0D6EC9</color>
     <color name="brand_gradient_bottom">#0653AA</color>
 
+    <!-- Водяной знак "1С" на фоне: очень деликатный серый на белом.
+         4% чёрного — почти невидимо, но создаёт «объём» фона, как на ПК. -->
+    <color name="brand_watermark">#0A000000</color>
+
     <!-- Алиасы -->
     <color name="teal_700">@color/blue_primary</color>
     <color name="teal_A700">@color/blue_variant</color>
